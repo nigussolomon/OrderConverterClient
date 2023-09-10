@@ -10,7 +10,7 @@ function App() {
       <Routes>
         <Route path="/" element={<Landing />} />
         <Route path="/oc-home" element={<Home />} />
-        <Route path="/oc-converter/:customer/:portal" element={<Converter />} />
+        <Route path="/oc-converter/:customer" element={<Converter />} />
       </Routes>
     </Router>
   );

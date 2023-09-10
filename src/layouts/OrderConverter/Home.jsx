@@ -16,12 +16,11 @@ import { UilSignOutAlt } from "@iconscout/react-unicons";
 export default function Home() {
   const navigate = useNavigate();
   const [customer, setCustomer] = useState("");
-  const [portal, setPortal] = useState("");
   const [disabled, setDisabled] = useState(true);
 
   useEffect(() => {
     const nullChecker = () => {
-      if (portal !== "" && customer !== "") {
+      if (customer !== "") {
         setDisabled(false);
       } else {
         setDisabled(true);
@@ -29,17 +28,10 @@ export default function Home() {
     };
 
     nullChecker();
-  }, [customer, portal]);
+  }, [customer]);
 
   const customers = {
     C1: "AZAMARA",
-    C2: "APPOLO",
-  };
-
-  const portals = {
-    P1: "MXP",
-    P2: "RCCL",
-    P3: "CTX",
   };
 
   return (
@@ -108,42 +100,11 @@ export default function Home() {
             </IconButton>
           </div>
           <div className="space" style={{ height: ".6vh" }}></div>
-          <div
-            className="filed"
-            style={{ display: "flex", justifyContent: "space-between" }}
-          >
-            <TextField
-              value={portal}
-              sx={{ width: "88%" }}
-              onChange={async (e) => {
-                setPortal(e.target.value);
-              }}
-              select
-              label="Portal"
-              variant="outlined"
-            >
-              <MenuItem value="P1">MXP</MenuItem>
-              <MenuItem value="P2">RCCL</MenuItem>
-              <MenuItem value="P3">CTX</MenuItem>
-            </TextField>
-            <IconButton
-              sx={{ width: "9%" }}
-              onClick={() => {
-                setPortal("");
-              }}
-              disabled={portal == ""}
-              variant="outlined"
-              color="danger"
-            >
-              <UilMultiply />
-            </IconButton>
-          </div>
-          <div className="space" style={{ height: ".8vh" }}></div>
           <Button
             disabled={disabled}
             onClick={() =>
               navigate(
-                `/oc-converter/${customers[customer]}/${portals[portal]}`
+                `/oc-converter/${customers[customer]}`
               )
             }
             variant="solid"
