@@ -6,14 +6,14 @@ import Divider from "@mui/joy/Divider";
 import TextField from "@mui/material/TextField";
 import MenuItem from "@mui/material/MenuItem";
 import { UilAngleRightB } from "@iconscout/react-unicons";
-import { UilExchange } from "@iconscout/react-unicons";
+import { UilBook } from '@iconscout/react-unicons'
 import { useNavigate } from "react-router-dom";
 import { useState, useEffect } from "react";
 import IconButton from "@mui/joy/IconButton";
 import { UilMultiply } from "@iconscout/react-unicons";
 import { UilSignOutAlt } from "@iconscout/react-unicons";
 
-export default function ConverterHome() {
+export default function ManagerHome() {
   const navigate = useNavigate();
   const [customer, setCustomer] = useState("");
   const [disabled, setDisabled] = useState(true);
@@ -54,9 +54,9 @@ export default function ConverterHome() {
           }}
         >
           <div style={{ display: "flex" }}>
-            <UilExchange />
+            <UilBook />
             <div className="space" style={{ width: "10px" }}></div>
-            <Typography level="title-lg">ORDER CONVERTER</Typography>
+            <Typography level="title-lg">ORDER MANAGER</Typography>
           </div>
           <IconButton
             onClick={() => {
@@ -103,7 +103,7 @@ export default function ConverterHome() {
             disabled={disabled}
             onClick={() =>
               navigate(
-                `/oc/${customers[customer]}`
+                `/om/${customers[customer]}`
               )
             }
             variant="solid"
@@ -118,7 +118,7 @@ export default function ConverterHome() {
             }}
             endDecorator={<UilAngleRightB />}
           >
-            GO TO CONVERTER
+            GO TO MANAGER
           </Button>
         </CardContent>
       </Card>

@@ -6,21 +6,22 @@ import Divider from "@mui/joy/Divider";
 import TextField from "@mui/material/TextField";
 import MenuItem from "@mui/material/MenuItem";
 import { UilAngleRightB } from "@iconscout/react-unicons";
-import { UilExchange } from "@iconscout/react-unicons";
 import { useNavigate } from "react-router-dom";
 import { useState, useEffect } from "react";
 import IconButton from "@mui/joy/IconButton";
 import { UilMultiply } from "@iconscout/react-unicons";
 import { UilSignOutAlt } from "@iconscout/react-unicons";
+import { UilCodeBranch } from "@iconscout/react-unicons";
 
-export default function ConverterHome() {
+export default function OrderSource() {
   const navigate = useNavigate();
   const [customer, setCustomer] = useState("");
+  const [portalName, setPortalName] = useState("");
   const [disabled, setDisabled] = useState(true);
 
   useEffect(() => {
     const nullChecker = () => {
-      if (customer !== "") {
+      if (customer !== "" && portalName !== "") {
         setDisabled(false);
       } else {
         setDisabled(true);
@@ -28,7 +29,7 @@ export default function ConverterHome() {
     };
 
     nullChecker();
-  }, [customer]);
+  }, [customer, portalName]);
 
   const customers = {
     C1: "AZAMARA",
@@ -44,7 +45,7 @@ export default function ConverterHome() {
         alignItems: "center",
       }}
     >
-      <Card variant="outlined" sx={{ width: 520 }}>
+      <Card variant="outlined" sx={{ width: 820 }}>
         <div
           className="title"
           style={{
@@ -54,13 +55,13 @@ export default function ConverterHome() {
           }}
         >
           <div style={{ display: "flex" }}>
-            <UilExchange />
+            <UilCodeBranch />
             <div className="space" style={{ width: "10px" }}></div>
-            <Typography level="title-lg">ORDER CONVERTER</Typography>
+            <Typography level="title-lg">ADD ORDER SOURCE</Typography>
           </div>
           <IconButton
             onClick={() => {
-              navigate("/");
+              navigate("/config");
             }}
             color="danger"
             variant="solid"
@@ -86,12 +87,27 @@ export default function ConverterHome() {
             >
               <MenuItem value="C1">AZAMARA</MenuItem>
             </TextField>
+            <div className="space" style={{ width: "30px" }}></div>
+            <TextField
+              sx={{ width: "88%" }}
+              value={portalName}
+              onChange={(e) => {
+                setPortalName(e.target.value);
+              }}
+              select
+              label="Portal Name"
+              variant="outlined"
+            >
+              <MenuItem value="P1">MXP</MenuItem>
+            </TextField>
+            <div className="space" style={{ width: "30px" }}></div>
             <IconButton
               sx={{ width: "9%" }}
               onClick={() => {
                 setCustomer("");
+                setPortalName("")
               }}
-              disabled={customer == ""}
+              disabled={customer == "" && portalName == ""}
               variant="outlined"
               color="danger"
             >
@@ -101,11 +117,7 @@ export default function ConverterHome() {
           <div className="space" style={{ height: ".6vh" }}></div>
           <Button
             disabled={disabled}
-            onClick={() =>
-              navigate(
-                `/oc/${customers[customer]}`
-              )
-            }
+            onClick={() => navigate(`/oc/${customers[customer]}`)}
             variant="solid"
             size="lg"
             color="primary"
@@ -118,7 +130,7 @@ export default function ConverterHome() {
             }}
             endDecorator={<UilAngleRightB />}
           >
-            GO TO CONVERTER
+            ADD SOURCE
           </Button>
         </CardContent>
       </Card>

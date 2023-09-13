@@ -7,7 +7,7 @@ import Typography from "@mui/material/Typography";
 import { UilSignOutAlt } from "@iconscout/react-unicons";
 import { useNavigate } from "react-router-dom";
 
-export default function NavBar({ title }) {
+export default function NavBar({ title, before }) {
   const navigate = useNavigate();
   return (
     <Box sx={{ flexGrow: 1, width: "100%" }}>
@@ -27,7 +27,7 @@ export default function NavBar({ title }) {
           <Box sx={{ flexGrow: 1 }} />
           <Box sx={{ display: { xs: "none", md: "flex" } }}>
             <IconButton
-              onClick={() => navigate("/oc-home")}
+              onClick={() => navigate(before)}
               sx={{ marginLeft: "7px", color: "red" }}
               size="large"
               edge="end"

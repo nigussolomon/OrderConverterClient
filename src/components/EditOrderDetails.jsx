@@ -15,7 +15,7 @@ import TableHead from "@mui/material/TableHead";
 import TableRow from "@mui/material/TableRow";
 import { renderTextField } from "./RenderTextField";
 
-export default function OrderDetails({ headers, rows, close, editable }) {
+export default function EditOrderDetails({ headers, rows, close, editable }) {
   const total = rows.reduce((acc, row) => acc + row.TotalPrice, 0);
   const [value, setValue] = useState("1");
   const [expDate, setExpDate] = useState();

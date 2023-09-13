@@ -3,7 +3,7 @@ import { useParams } from "react-router-dom";
 import NavBar from "../../components/AppBar";
 import Input from "@mui/joy/Input";
 import Button from "@mui/joy/Button";
-import { UilLink } from "@iconscout/react-unicons";
+import { UilSearchAlt } from '@iconscout/react-unicons'
 import OrderDetails from "../../components/OrderDetails";
 import Box from "@mui/joy/Box";
 import ListDivider from "@mui/joy/ListDivider";
@@ -12,7 +12,7 @@ import * as React from "react";
 import LinearProgress from "@mui/joy/LinearProgress";
 import { UilPackage } from "@iconscout/react-unicons";
 
-export default function Converter() {
+export default function Manager() {
   const prefix = "https://www.mymxp.com/x/?";
   const { customer } = useParams();
   const [modalTitle, setModalTitle] = React.useState("");
@@ -26,7 +26,7 @@ export default function Converter() {
     setRows([]);
     setLoading(true);
     try {
-      setDisplay("block");
+      setDisplay("block")
       const url = `http://localhost:8000/so_items?po_login_code=${id}&user_full_name=maveko_plu_module`;
       const response = await fetch(url);
       const data = await response.json();
@@ -35,7 +35,7 @@ export default function Converter() {
       console.log(rows);
       setLoading(false);
     } catch (error) {
-      setDisplay("none");
+      setDisplay("none")
       console.log(error);
     }
   };
@@ -45,48 +45,30 @@ export default function Converter() {
       className="converter"
       style={{ paddingInline: "10px", paddingTop: "10px" }}
     >
-      <NavBar title={`${customer}`} before="/oc/home"></NavBar>
+      <NavBar title={`${customer}`} before="/om/home"></NavBar>
       <br />
       <div className="body">
         <Input
           value={loginCode}
           onChange={(e) => setLoginCode(e.target.value)}
-          placeholder="Input you po login code..."
-          sx={{ width: 800 }}
-          startDecorator={<UilLink />}
+          placeholder="Input search keyword..."
+          sx={{ width: 500 }}
+          startDecorator={<UilSearchAlt />}
           endDecorator={
-            <div className="actions">
-              <Button
-                color="success"
-                onClick={() => {
-                  fetchPOs(loginCode);
-                  setModalTitle(loginCode);
-                }}
-                sx={{
-                  padding: "14px",
-                  margin: "8px",
-                  marginRight: "-4px",
-                  paddingInline: "40px",
-                }}
-              >
-                PROCESS NOW
-              </Button>
-              <Button
-                color="warning"
-                onClick={() => {
-                  fetchPOs(loginCode);
-                  setModalTitle(loginCode);
-                }}
-                sx={{
-                  padding: "14px",
-                  margin: "8px",
-                  marginRight: "-4px",
-                  paddingInline: "40px",
-                }}
-              >
-                PROCESS LATER
-              </Button>
-            </div>
+            <Button
+              onClick={() => {
+                fetchPOs(loginCode);
+                setModalTitle(loginCode);
+              }}
+              sx={{
+                padding: "14px",
+                margin: "8px",
+                marginRight: "-4px",
+                paddingInline: "40px",
+              }}
+            >
+              SEARCH
+            </Button>
           }
         />
         <Box

@@ -1,7 +1,12 @@
 import { BrowserRouter as Router, Route, Routes } from "react-router-dom";
 import Landing from "./layouts/Landing.jsx"
-import Home from "./layouts/OrderConverter/Home.jsx"
+import Configuration from "./layouts/Configuration/Configuration.jsx"
+import OrderSource from "./layouts/Configuration/OrderSource.jsx"
+import SourceMapping from "./layouts/Configuration/SourceMapping.jsx"
+import ConverterHome from "./layouts/OrderConverter/Home.jsx"
+import ManagerHome from "./layouts/OrderManager/Home.jsx"
 import Converter from "./layouts/OrderConverter/Converter.jsx"
+import Manager from "./layouts/OrderManager/Manager.jsx"
 
 
 function App() {
@@ -9,8 +14,13 @@ function App() {
     <Router>
       <Routes>
         <Route path="/" element={<Landing />} />
-        <Route path="/oc-home" element={<Home />} />
-        <Route path="/oc-converter/:customer" element={<Converter />} />
+        <Route path="/config" element={<Configuration />} />
+        <Route path="/config/os" element={<OrderSource />} />
+        <Route path="/config/sm" element={<SourceMapping />} />
+        <Route path="/oc/home" element={<ConverterHome />} />
+        <Route path="/oc/:customer" element={<Converter />} />
+        <Route path="/om/home" element={<ManagerHome />} />
+        <Route path="/om/:customer" element={<Manager />} />
       </Routes>
     </Router>
   );
