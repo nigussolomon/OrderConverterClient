@@ -8,9 +8,6 @@ import MenuItem from "@mui/material/MenuItem";
 import { UilAngleRightB } from "@iconscout/react-unicons";
 import { useNavigate } from "react-router-dom";
 import { useState, useEffect } from "react";
-import IconButton from "@mui/joy/IconButton";
-import { UilMultiply } from "@iconscout/react-unicons";
-import { UilSignOutAlt } from "@iconscout/react-unicons";
 import { UilCodeBranch } from "@iconscout/react-unicons";
 
 export default function OrderSource() {
@@ -36,16 +33,8 @@ export default function OrderSource() {
   };
 
   return (
-    <div
-      style={{
-        width: "100vw",
-        height: "100vh",
-        display: "flex",
-        justifyContent: "center",
-        alignItems: "center",
-      }}
-    >
-      <Card variant="outlined" sx={{ width: 820 }}>
+    <div>
+      <Card variant="outlined" sx={{ width: 450 }}>
         <div
           className="title"
           style={{
@@ -59,24 +48,12 @@ export default function OrderSource() {
             <div className="space" style={{ width: "10px" }}></div>
             <Typography level="title-lg">ADD ORDER SOURCE</Typography>
           </div>
-          <IconButton
-            onClick={() => {
-              navigate("/config");
-            }}
-            color="danger"
-            variant="solid"
-          >
-            <UilSignOutAlt />
-          </IconButton>
         </div>
         <Divider />
         <CardContent orientation="vertical">
-          <div
-            className="field"
-            style={{ display: "flex", justifyContent: "space-between" }}
-          >
+          <div className="field">
             <TextField
-              sx={{ width: "88%" }}
+              sx={{ width: "100%" }}
               value={customer}
               onChange={(e) => {
                 setCustomer(e.target.value);
@@ -87,9 +64,9 @@ export default function OrderSource() {
             >
               <MenuItem value="C1">AZAMARA</MenuItem>
             </TextField>
-            <div className="space" style={{ width: "30px" }}></div>
+            <div className="space" style={{ height: "12px" }}></div>
             <TextField
-              sx={{ width: "88%" }}
+              sx={{ width: "100%" }}
               value={portalName}
               onChange={(e) => {
                 setPortalName(e.target.value);
@@ -101,18 +78,6 @@ export default function OrderSource() {
               <MenuItem value="P1">MXP</MenuItem>
             </TextField>
             <div className="space" style={{ width: "30px" }}></div>
-            <IconButton
-              sx={{ width: "9%" }}
-              onClick={() => {
-                setCustomer("");
-                setPortalName("")
-              }}
-              disabled={customer == "" && portalName == ""}
-              variant="outlined"
-              color="danger"
-            >
-              <UilMultiply />
-            </IconButton>
           </div>
           <div className="space" style={{ height: ".6vh" }}></div>
           <Button
