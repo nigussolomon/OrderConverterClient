@@ -19,7 +19,7 @@ export default function Converter() {
   const [rows, setRows] = React.useState([]);
   const [header, setHeaders] = React.useState({});
   const [loading, setLoading] = React.useState(false);
-  const [loginCode, setLoginCode] = React.useState("");
+  const [loginCode, setLoginCode] = React.useState("A135140324B5494CA6A1A9FD85B3B3DE");
   const [display, setDisplay] = React.useState("none");
 
   const fetchPOs = async (id) => {
@@ -27,7 +27,7 @@ export default function Converter() {
     setLoading(true);
     try {
       setDisplay("block");
-      const url = `http://localhost:8000/so_items?po_login_code=${id}&user_full_name=maveko_plu_module`;
+      const url = `http://192.168.1.10:8000/so_items?po_login_code=${id}&user_full_name=maveko_plu_module`;
       const response = await fetch(url);
       const data = await response.json();
       await setRows(data.details);

@@ -37,8 +37,8 @@ export default function ConverterHome() {
   return (
     <div
       style={{
-        width: "100vw",
-        height: "100vh",
+        width: "100%",
+        marginTop: "13%",
         display: "flex",
         justifyContent: "center",
         alignItems: "center",

@@ -1,8 +1,10 @@
 import Client from "./SetupData/Client.jsx";
+import Supplier from "./SetupData/Supplier.jsx";
 import UOM from "./SetupData/UOM.jsx";
 import Currency from "./SetupData/Currency.jsx";
 import ProductType from "./SetupData/ProductType.jsx";
 import OrderSource from "./SetupData/OrderSource.jsx";
+import SourceMapping from "./SetupData/SourceMapping.jsx";
 import * as React from "react";
 import PropTypes from "prop-types";
 import Tabs from "@mui/material/Tabs";
@@ -76,17 +78,19 @@ export default function SetupData() {
             sx={{ borderRight: 1, borderColor: "divider" }}
           >
             <Tab label="CLIENT" {...a11yProps(0)} />
-            <Tab label="UNIT OF MEASURE" {...a11yProps(1)} />
-            <Tab label="CURRENCIES" {...a11yProps(2)} />
-            <Tab label="PRODUCT TYPES" {...a11yProps(3)} />
-            <Tab label="ORDER SOURCE" {...a11yProps(4)} />
+            <Tab label="SUPPLIER" {...a11yProps(1)} />
+            <Tab label="UNIT OF MEASURE" {...a11yProps(2)} />
+            <Tab label="CURRENCIES" {...a11yProps(3)} />
+            <Tab label="PRODUCT TYPES" {...a11yProps(4)} />
+            <Tab label="ORDER SOURCE" {...a11yProps(5)} />
+            <Tab label="SOURCE MAPPING" {...a11yProps(6)} />
           </Tabs>
         </div>
 
         <div className="actions">
           <IconButton
             onClick={() => {
-              navigate("/config");
+              navigate("/");
             }}
             color="danger"
             variant="solid"
@@ -99,16 +103,22 @@ export default function SetupData() {
         <Client></Client>
       </TabPanel>
       <TabPanel value={value} index={1}>
-        <UOM></UOM>
+        <Supplier></Supplier>
       </TabPanel>
       <TabPanel value={value} index={2}>
-        <Currency></Currency>
+        <UOM></UOM>
       </TabPanel>
       <TabPanel value={value} index={3}>
-        <ProductType></ProductType>
+        <Currency></Currency>
       </TabPanel>
       <TabPanel value={value} index={4}>
+        <ProductType></ProductType>
+      </TabPanel>
+      <TabPanel value={value} index={5}>
         <OrderSource></OrderSource>
+      </TabPanel>
+      <TabPanel value={value} index={6}>
+        <SourceMapping></SourceMapping>
       </TabPanel>
     </Box>
   );

@@ -27,16 +27,7 @@ export default function SourceMapping() {
   };
 
   return (
-    <div
-      style={{
-        width: "98vw",
-        height: "98vh",
-        display: "flex",
-        justifyContent: "center",
-        alignItems: "center",
-        flexDirection: "column",
-      }}
-    >
+    <div>
       <Card variant="outlined" sx={{ width: 520 }}>
         <div
           className="title"
@@ -181,7 +172,7 @@ export default function SourceMapping() {
               height: "100%",
             }}
           >
-            <div className="body" style={{ height: 265, overflowY: "auto", }}>
+            <div className="body" style={{ height: 265, overflowY: "auto" }}>
               <Typography level="title-lg">
                 {mappings.map((mapping, index) => (
                   <div

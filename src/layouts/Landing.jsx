@@ -12,8 +12,8 @@ export default function Landing() {
   return (
     <div
       style={{
-        width: "98vw",
-        height: "98vh",
+        width: "100%",
+        marginTop: "13%",
         display: "flex",
         justifyContent: "center",
         alignItems: "center",
