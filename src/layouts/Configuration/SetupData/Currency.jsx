@@ -9,6 +9,7 @@ import { UilAngleRightB } from "@iconscout/react-unicons";
 // import { useNavigate } from "react-router-dom";
 import { useState } from "react";
 import { UilCodeBranch } from "@iconscout/react-unicons";
+import { headDiv } from "./setupStyle";
 
 export default function Currency() {
   // const navigate = useNavigate();
@@ -16,7 +17,7 @@ export default function Currency() {
   const [currencyName, setCurrencyName] = useState("");
 
   return (
-    <div>
+    <div style={headDiv}>
       <Card variant="outlined" sx={{ width: 450 }}>
         <div
           className="title"

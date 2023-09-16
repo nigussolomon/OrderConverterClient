@@ -1,3 +1,4 @@
+/* eslint-disable react/prop-types */
 import Button from "@mui/joy/Button";
 import Card from "@mui/joy/Card";
 import CardContent from "@mui/joy/CardContent";
@@ -6,14 +7,18 @@ import Divider from "@mui/joy/Divider";
 import TextField from "@mui/material/TextField";
 import MenuItem from "@mui/material/MenuItem";
 import { UilAngleRightB } from "@iconscout/react-unicons";
-import { UilExchange } from "@iconscout/react-unicons";
 import { useNavigate } from "react-router-dom";
 import { useState, useEffect } from "react";
 import IconButton from "@mui/joy/IconButton";
 import { UilMultiply } from "@iconscout/react-unicons";
-import { UilSignOutAlt } from "@iconscout/react-unicons";
+import { UilTimes } from "@iconscout/react-unicons";
 
-export default function ConverterHome() {
+export default function CustomerChoice({
+  path,
+  setDisplay,
+  sys_title,
+  sys_icon,
+}) {
   const navigate = useNavigate();
   const [customer, setCustomer] = useState("");
   const [disabled, setDisabled] = useState(true);
@@ -37,8 +42,7 @@ export default function ConverterHome() {
   return (
     <div
       style={{
-        width: "100%",
-        marginTop: "13%",
+        marginTop: "13px",
         display: "flex",
         justifyContent: "center",
         alignItems: "center",
@@ -54,18 +58,18 @@ export default function ConverterHome() {
           }}
         >
           <div style={{ display: "flex" }}>
-            <UilExchange />
+            {sys_icon}
             <div className="space" style={{ width: "10px" }}></div>
-            <Typography level="title-lg">ORDER CONVERTER</Typography>
+            <Typography level="title-lg">{sys_title}</Typography>
           </div>
           <IconButton
             onClick={() => {
-              navigate("/");
+              setDisplay("none");
             }}
             color="danger"
             variant="solid"
           >
-            <UilSignOutAlt />
+            <UilTimes />
           </IconButton>
         </div>
         <Divider />
@@ -101,11 +105,7 @@ export default function ConverterHome() {
           <div className="space" style={{ height: ".6vh" }}></div>
           <Button
             disabled={disabled}
-            onClick={() =>
-              navigate(
-                `/oc/${customers[customer]}`
-              )
-            }
+            onClick={() => navigate(`${path}/${customers[customer]}`)}
             variant="solid"
             size="lg"
             color="primary"

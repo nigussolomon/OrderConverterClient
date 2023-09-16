@@ -12,7 +12,7 @@ import Tab from "@mui/material/Tab";
 import Typography from "@mui/material/Typography";
 import Box from "@mui/material/Box";
 import IconButton from "@mui/joy/IconButton";
-import { UilSignOutAlt } from "@iconscout/react-unicons";
+import { UilTimesCircle } from "@iconscout/react-unicons";
 import { useNavigate } from "react-router-dom";
 
 function TabPanel(props) {
@@ -95,7 +95,7 @@ export default function SetupData() {
             color="danger"
             variant="solid"
           >
-            <UilSignOutAlt />
+            <UilTimesCircle />
           </IconButton>
         </div>
       </div>

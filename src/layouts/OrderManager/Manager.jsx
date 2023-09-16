@@ -3,7 +3,7 @@ import { useParams } from "react-router-dom";
 import NavBar from "../../components/AppBar";
 import Input from "@mui/joy/Input";
 import Button from "@mui/joy/Button";
-import { UilSearchAlt } from '@iconscout/react-unicons'
+import { UilSearchAlt } from "@iconscout/react-unicons";
 import OrderDetails from "../../components/OrderDetails";
 import Box from "@mui/joy/Box";
 import ListDivider from "@mui/joy/ListDivider";
@@ -11,6 +11,10 @@ import Typography from "@mui/joy/Typography";
 import * as React from "react";
 import LinearProgress from "@mui/joy/LinearProgress";
 import { UilPackage } from "@iconscout/react-unicons";
+import List from "@mui/joy/List";
+import ListItem from "@mui/joy/ListItem";
+import ListItemDecorator from "@mui/joy/ListItemDecorator";
+
 
 export default function Manager() {
   const prefix = "https://www.mymxp.com/x/?";
@@ -22,12 +26,26 @@ export default function Manager() {
   const [loginCode, setLoginCode] = React.useState("");
   const [display, setDisplay] = React.useState("none");
 
+  const orderLinks = [
+    {
+      title: "A135140324B5494CA6A1A9FD85B3B3DE",
+      date: "2023-10-08",
+      disabled: false,
+      status: "PENDING"
+    },
+    {
+      title: "F23F84E3E06B48B1A307E486DA3B716E",
+      date: "2023-10-08",
+      disabled: true,
+      status: "CONFIRMED"
+    },
+  ];
   const fetchPOs = async (id) => {
     setRows([]);
     setLoading(true);
     try {
-      setDisplay("block")
-      const url = `http://localhost:8000/so_items?po_login_code=${id}&user_full_name=maveko_plu_module`;
+      setDisplay("block");
+      const url = `http://192.168.1.10:8000/so_items?po_login_code=${id}&user_full_name=maveko_plu_module`;
       const response = await fetch(url);
       const data = await response.json();
       await setRows(data.details);
@@ -35,7 +53,7 @@ export default function Manager() {
       console.log(rows);
       setLoading(false);
     } catch (error) {
-      setDisplay("none")
+      setDisplay("none");
       console.log(error);
     }
   };
@@ -45,19 +63,18 @@ export default function Manager() {
       className="converter"
       style={{ paddingInline: "10px", paddingTop: "10px" }}
     >
-      <NavBar title={`${customer}`} before="/om/home"></NavBar>
+      <NavBar title={`${customer}`}></NavBar>
       <br />
       <div className="body">
         <Input
           value={loginCode}
           onChange={(e) => setLoginCode(e.target.value)}
-          placeholder="Input search keyword..."
-          sx={{ width: 500 }}
+          placeholder="Input search order number..."
+          sx={{ width: 800 }}
           startDecorator={<UilSearchAlt />}
           endDecorator={
             <Button
               onClick={() => {
-                fetchPOs(loginCode);
                 setModalTitle(loginCode);
               }}
               sx={{
@@ -67,7 +84,7 @@ export default function Manager() {
                 paddingInline: "40px",
               }}
             >
-              SEARCH
+              SEARCH ORDER NUMBER
             </Button>
           }
         />
@@ -101,10 +118,65 @@ export default function Manager() {
                   headers={header}
                   rows={rows}
                   close={() => setDisplay("none")}
+                  editable
                 />
               </>
             )}
           </div>
+          <Box
+            sx={{
+              display: display == "block" ? "none" : "block",
+            }}
+          >
+            <div>
+              <List
+                sx={{
+                  minWidth: "98.3vw",
+                  borderRadius: "sm",
+                }}
+              >
+                <ListDivider inset={"gutter"} />
+                {orderLinks.map((list) => (
+                  <>
+                    <ListItem>
+                      <ListItemDecorator>
+                        <UilPackage></UilPackage>
+                      </ListItemDecorator>
+                      <div
+                        className="text"
+                        style={{
+                          display: "flex",
+                          justifyContent: "space-between",
+                          width: "100%",
+                          alignItems: "center",
+                        }}
+                      >
+                        <span>{list.title}</span>
+                        <span>{list.date}</span>
+                        <span>{list.status}</span>
+                        <Button
+                          onClick={() => {
+                            setHeaders("");
+                            setModalTitle(list.title.replace(prefix, ""));
+                            fetchPOs(list.title.replace(prefix, ""));
+                          }}
+                          disabled={list.disabled}
+                          sx={{
+                            padding: "14px",
+                            paddingInline: "40px",
+                          }}
+                          color="warning"
+                        >
+                          UPDATE
+                        </Button>
+                      </div>
+                    </ListItem>
+                    <ListDivider inset={"gutter"} />
+                  </>
+                ))}
+              </List>
+            </div>
+          </Box>
         </Box>
       </div>
     </div>

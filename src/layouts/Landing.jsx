@@ -7,8 +7,14 @@ import { landingMenus } from "../components/LandingMenus";
 import { UilAngleRightB } from "@iconscout/react-unicons";
 import { UilApps } from "@iconscout/react-unicons";
 import { useNavigate } from "react-router-dom";
+import { useState } from "react";
+import CustomerChoice from "../components/CustomerChoice";
 export default function Landing() {
   const navigate = useNavigate();
+  const [path, setPath] = useState("");
+  const [display, setDisplay] = useState("none");
+  const [sysTitle, setSysTitle] = useState("Choose Customer");
+  const [sysIcon, setSysIcon] = useState(<UilApps />);
   return (
     <div
       style={{
@@ -16,6 +22,7 @@ export default function Landing() {
         marginTop: "13%",
         display: "flex",
         justifyContent: "center",
+        flexDirection: "column",
         alignItems: "center",
       }}
     >
@@ -50,11 +57,16 @@ export default function Landing() {
         <CardContent orientation="vertical">
           {landingMenus.map((menu) => (
             <Button
-              onClick={() => navigate(menu.path)}
+              onClick={() => {
+                menu.navigate ? navigate(menu.path) : setPath(menu.path);
+                setSysTitle(menu.title);
+                setSysIcon(menu.icon);
+                !menu.navigate ? setDisplay("block") : setDisplay("none");
+              }}
               key={menu.id}
               variant="solid"
               size="lg"
-              color="primary"
+              color={menu.logout ? "danger" : "primary"}
               disabled={menu.disabled}
               sx={{
                 display: "flex",
@@ -77,6 +89,14 @@ export default function Landing() {
           ))}
         </CardContent>
       </Card>
+      <div className="choiceCard" style={{ display: display }}>
+        <CustomerChoice
+          sys_icon={sysIcon}
+          sys_title={sysTitle}
+          setDisplay={setDisplay}
+          path={path}
+        ></CustomerChoice>
+      </div>
     </div>
   );
 }

@@ -9,6 +9,7 @@ import { UilAngleRightB } from "@iconscout/react-unicons";
 // import { useNavigate } from "react-router-dom";
 import { useState } from "react";
 import { UilCodeBranch } from "@iconscout/react-unicons";
+import { headDiv } from "./setupStyle";
 
 export default function Supplier() {
   // const navigate = useNavigate();
@@ -20,7 +21,7 @@ export default function Supplier() {
   const [password, setPassword] = useState("");
 
   return (
-    <div>
+    <div style={headDiv}>
       <Card variant="outlined" sx={{ width: 450 }}>
         <div
           className="title"

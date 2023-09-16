@@ -11,6 +11,11 @@ import Typography from "@mui/joy/Typography";
 import * as React from "react";
 import LinearProgress from "@mui/joy/LinearProgress";
 import { UilPackage } from "@iconscout/react-unicons";
+import List from "@mui/joy/List";
+import ListItem from "@mui/joy/ListItem";
+import ListItemDecorator from "@mui/joy/ListItemDecorator";
+import { UilProcess } from "@iconscout/react-unicons";
+import { UilSave } from '@iconscout/react-unicons'
 
 export default function Converter() {
   const prefix = "https://www.mymxp.com/x/?";
@@ -19,15 +24,27 @@ export default function Converter() {
   const [rows, setRows] = React.useState([]);
   const [header, setHeaders] = React.useState({});
   const [loading, setLoading] = React.useState(false);
-  const [loginCode, setLoginCode] = React.useState("A135140324B5494CA6A1A9FD85B3B3DE");
+  const [loginCode, setLoginCode] = React.useState(
+    "A135140324B5494CA6A1A9FD85B3B3DE"
+  );
   const [display, setDisplay] = React.useState("none");
 
+  const orderLinks = [
+    {
+      title: "A135140324B5494CA6A1A9FD85B3B3DE",
+      disabled: false,
+    },
+    {
+      title: "F23F84E3E06B48B1A307E486DA3B716E",
+      disabled: true,
+    },
+  ];
   const fetchPOs = async (id) => {
     setRows([]);
     setLoading(true);
     try {
       setDisplay("block");
-      const url = `http://192.168.1.10:8000/so_items?po_login_code=${id}&user_full_name=maveko_plu_module`;
+      const url = `http://localhost:8000/so_items?po_login_code=${id}&user_full_name=maveko_plu_module`;
       const response = await fetch(url);
       const data = await response.json();
       await setRows(data.details);
@@ -45,7 +62,7 @@ export default function Converter() {
       className="converter"
       style={{ paddingInline: "10px", paddingTop: "10px" }}
     >
-      <NavBar title={`${customer}`} before="/oc/home"></NavBar>
+      <NavBar title={`${customer}`}></NavBar>
       <br />
       <div className="body">
         <Input
@@ -68,8 +85,9 @@ export default function Converter() {
                   marginRight: "-4px",
                   paddingInline: "40px",
                 }}
+                startDecorator={<UilProcess />}
               >
-                PROCESS NOW
+                PROCESS
               </Button>
               <Button
                 color="warning"
@@ -83,8 +101,9 @@ export default function Converter() {
                   marginRight: "-4px",
                   paddingInline: "40px",
                 }}
+                startDecorator={<UilSave />}
               >
-                PROCESS LATER
+                SAVE
               </Button>
             </div>
           }
@@ -123,6 +142,59 @@ export default function Converter() {
               </>
             )}
           </div>
+          <Box
+            sx={{
+              display: display == "block" ? "none" : "block",
+            }}
+          >
+            <div>
+              <List
+                sx={{
+                  minWidth: "98.3vw",
+                  borderRadius: "sm",
+                }}
+              >
+                <ListDivider inset={"gutter"} />
+                {orderLinks.map((list) => (
+                  <>
+                    <ListItem>
+                      <ListItemDecorator>
+                        <UilLink></UilLink>
+                      </ListItemDecorator>
+                      <div
+                        className="text"
+                        style={{
+                          display: "flex",
+                          justifyContent: "space-between",
+                          width: "100%",
+                          alignItems: "center",
+                        }}
+                      >
+                        <span>{list.title}</span>
+                        <Button
+                          onClick={() => {
+                            setHeaders("");
+                            setModalTitle(list.title.replace(prefix, ""));
+                            fetchPOs(list.title.replace(prefix, ""));
+                          }}
+                          disabled={list.disabled}
+                          sx={{
+                            padding: "14px",
+                            paddingInline: "40px",
+                          }}
+                          color="success"
+                          startDecorator={<UilProcess />}
+                        >
+                          PROCESS
+                        </Button>
+                      </div>
+                    </ListItem>
+                    <ListDivider inset={"gutter"} />
+                  </>
+                ))}
+              </List>
+            </div>
+          </Box>
         </Box>
       </div>
     </div>

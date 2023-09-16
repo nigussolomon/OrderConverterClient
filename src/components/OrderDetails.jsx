@@ -42,6 +42,9 @@ export default function OrderDetails({ headers, rows, close, editable }) {
     headers ? dayjs(headers.DeliveryDateToDestination) : ""
   );
 
+  const [editableQty, setEditableQty] = useState({});
+  const [editableUnitCost, setEditableUnitCost] = useState({});
+
   const handleChange = (event, newValue) => {
     setValue(newValue);
   };
@@ -217,38 +220,58 @@ export default function OrderDetails({ headers, rows, close, editable }) {
                       : ""}
                   </TableCell>
                   <TableCell>{row.UOM}</TableCell>
+                  {editable ? (
+                    <>
+                      <TableCell align="right">
+                        <input
+                          type="number"
+                          value={
+                            editableQty[row.ItemCode] || row.QuantityOrdered
+                          }
+                          onChange={(e) =>
+                            setEditableQty({
+                              ...editableQty,
+                              [row.ItemCode]: e.target.value,
+                            })
+                          }
+                        />
+                      </TableCell>
+                      <TableCell align="right">
+                        <input
+                          type="number"
+                          value={
+                            editableUnitCost[row.ItemCode] || row.UnitPrice
+                          }
+                          onChange={(e) =>
+                            setEditableUnitCost({
+                              ...editableUnitCost,
+                              [row.ItemCode]: e.target.value,
+                            })
+                          }
+                        />
+                      </TableCell>
+                    </>
+                  ) : (
+                    <>
+                      <TableCell align="right">{row.QuantityOrdered}</TableCell>
+                      <TableCell align="right">
+                        {row.UnitPrice.toString()}
+                      </TableCell>
+                    </>
+                  )}
                   <TableCell align="right">
-                    {row.UnitPrice.toString()}
-                  </TableCell>
-                  <TableCell align="right">{row.QuantityOrdered}</TableCell>
-                  <TableCell align="right">
-                    {(row.QuantityOrdered * row.UnitPrice)
+                    {(
+                      (editableQty[row.ItemCode] || row.QuantityOrdered) *
+                      (editableUnitCost[row.ItemCode] || row.UnitPrice)
+                    )
                       .toFixed(2)
                       .toString()}
                   </TableCell>
-                  <TableCell align="right">{row.TotalPrice}</TableCell>
+                  <TableCell align="right">
+                    {total.toFixed(2).toString()}
+                  </TableCell>
                 </TableRow>
               ))}
-              <TableRow>
-                <TableCell colSpan={6} />
-                <TableCell
-                  colSpan={1}
-                  align="left"
-                  style={{
-                    fontWeight: 900,
-                    background: "#808080",
-                    color: "#fff",
-                  }}
-                >
-                  Subtotal
-                </TableCell>
-                <TableCell
-                  style={{ background: "#808080", color: "#fff" }}
-                  align="right"
-                >
-                  {total.toFixed(2).toString()}
-                </TableCell>
-              </TableRow>
             </TableBody>
           </Table>
         </TableContainer>

@@ -2,18 +2,25 @@
 import AppBar from "@mui/material/AppBar";
 import Box from "@mui/material/Box";
 import Toolbar from "@mui/material/Toolbar";
-import IconButton from "@mui/material/IconButton";
+import IconButton from "@mui/joy/IconButton";
 import Typography from "@mui/material/Typography";
-import { UilSignOutAlt } from "@iconscout/react-unicons";
+import { UilTimesCircle } from "@iconscout/react-unicons";
 import { useNavigate } from "react-router-dom";
 
-export default function NavBar({ title, before }) {
+export default function NavBar({ title }) {
   const navigate = useNavigate();
   return (
     <Box sx={{ flexGrow: 1, width: "100%" }}>
       <AppBar
         position="static"
-        sx={{ borderRadius: "2px", background: "#fff", color: "#000", boxShadow: 0, borderBottom: "1px solid #ccc", mb: 1.5 }}
+        sx={{
+          borderRadius: "2px",
+          background: "#fff",
+          color: "#000",
+          boxShadow: 0,
+          borderBottom: "1px solid #ccc",
+          mb: 1.5,
+        }}
       >
         <Toolbar>
           <Typography
@@ -27,15 +34,13 @@ export default function NavBar({ title, before }) {
           <Box sx={{ flexGrow: 1 }} />
           <Box sx={{ display: { xs: "none", md: "flex" } }}>
             <IconButton
-              onClick={() => navigate(before)}
-              sx={{ marginLeft: "7px", color: "red" }}
-              size="large"
-              edge="end"
-              aria-label="account of current user"
-              aria-haspopup="true"
-              color="inherit"
+              onClick={() => {
+                navigate("/");
+              }}
+              color="danger"
+              variant="solid"
             >
-              <UilSignOutAlt />
+              <UilTimesCircle />
             </IconButton>
           </Box>
           <Box sx={{ display: { xs: "flex", md: "none" } }}></Box>

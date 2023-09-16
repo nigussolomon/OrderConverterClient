@@ -15,7 +15,7 @@ import TableHead from "@mui/material/TableHead";
 import TableRow from "@mui/material/TableRow";
 import { renderTextField } from "./RenderTextField";
 
-export default function EditOrderDetails({ headers, rows, close, editable }) {
+export default function EditOrderDetails({ headers, rows, close }) {
   const total = rows.reduce((acc, row) => acc + row.TotalPrice, 0);
   const [value, setValue] = useState("1");
   const [expDate, setExpDate] = useState();
@@ -51,28 +51,24 @@ export default function EditOrderDetails({ headers, rows, close, editable }) {
       label: "PO Number",
       value: headers ? headers.PONumber : "",
       width: "332.5px",
-      disabled: !editable,
     },
     {
       label: "Delivery Address",
       value: deliveryAddress,
       change: setDeliveryAddress,
       width: "532.5px",
-      disabled: !editable,
     },
     {
       label: "Final Delivery",
       value: finalDelivery,
       change: setFinalDelivery,
       width: "632.5px",
-      disabled: !editable,
     },
     {
       label: "Name of Ship",
       value: shipName,
       change: setShipName,
       width: "332.5px",
-      disabled: !editable,
     },
   ];
 
@@ -81,19 +77,16 @@ export default function EditOrderDetails({ headers, rows, close, editable }) {
       label: "Customer",
       value: headers ? headers.POSentByPersonCompany : "",
       width: "332.5px",
-      disabled: !editable,
     },
     {
       label: "Street",
       value: headers ? headers.SentInvoiceAddress3 : "",
       width: "532.5px",
-      disabled: !editable,
     },
     {
       label: "City",
       value: headers ? headers.SentInvoiceAddress2 : "",
       width: "532.5px",
-      disabled: !editable,
     },
     {
       label: "Address",
@@ -107,7 +100,6 @@ export default function EditOrderDetails({ headers, rows, close, editable }) {
           : ""
         : "",
       width: "332.5px",
-      disabled: !editable,
     },
   ];
 
@@ -116,20 +108,17 @@ export default function EditOrderDetails({ headers, rows, close, editable }) {
       label: "Terms",
       value: headers ? headers.PaymentTerms : "",
       width: "332.5px",
-      disabled: !editable,
     },
     {
       label: "Process Matchcode",
       value: headers ? headers.PONumber : "",
       width: "332.5px",
-      disabled: !editable,
     },
     {
       label: "Refernce Date",
       value: headers ? dayjs(headers.POSentDate) : "",
       width: "332.5px",
       date: true,
-      disabled: !editable,
     },
     {
       label: "Delivery Date",
@@ -137,7 +126,6 @@ export default function EditOrderDetails({ headers, rows, close, editable }) {
       change: setDeliveryDate,
       width: "332.5px",
       date: true,
-      disabled: !editable,
     },
     {
       label: "Expected Date",
