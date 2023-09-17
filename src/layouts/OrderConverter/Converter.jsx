@@ -15,11 +15,11 @@ import List from "@mui/joy/List";
 import ListItem from "@mui/joy/ListItem";
 import ListItemDecorator from "@mui/joy/ListItemDecorator";
 import { UilProcess } from "@iconscout/react-unicons";
-import { UilSave } from '@iconscout/react-unicons'
+import { UilSave } from "@iconscout/react-unicons";
 
 export default function Converter() {
   const prefix = "https://www.mymxp.com/x/?";
-  const { customer } = useParams();
+  const { id, customer } = useParams();
   const [modalTitle, setModalTitle] = React.useState("");
   const [rows, setRows] = React.useState([]);
   const [header, setHeaders] = React.useState({});
@@ -135,6 +135,7 @@ export default function Converter() {
                 </Typography>
                 <ListDivider sx={{ mt: 2, mb: 2 }} inset={"gutter"} />
                 <OrderDetails
+                  id={id}
                   headers={header}
                   rows={rows}
                   close={() => setDisplay("none")}

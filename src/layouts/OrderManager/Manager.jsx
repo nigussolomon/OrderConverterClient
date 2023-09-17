@@ -14,7 +14,7 @@ import { UilPackage } from "@iconscout/react-unicons";
 import List from "@mui/joy/List";
 import ListItem from "@mui/joy/ListItem";
 import ListItemDecorator from "@mui/joy/ListItemDecorator";
-
+import { getClients } from "../../services/api";
 
 export default function Manager() {
   const prefix = "https://www.mymxp.com/x/?";
@@ -25,27 +25,38 @@ export default function Manager() {
   const [loading, setLoading] = React.useState(false);
   const [loginCode, setLoginCode] = React.useState("");
   const [display, setDisplay] = React.useState("none");
+  const [clientList, setClientList] = React.useState([]);
+
+  React.useEffect(() => {
+    async function CLIENTS() {
+      const clients = await getClients();
+      setClientList(clients);
+      console.log(clientList);
+    }
+    CLIENTS();
+  });
 
   const orderLinks = [
     {
       title: "A135140324B5494CA6A1A9FD85B3B3DE",
       date: "2023-10-08",
       disabled: false,
-      status: "PENDING"
+      status: "PENDING",
     },
     {
       title: "F23F84E3E06B48B1A307E486DA3B716E",
       date: "2023-10-08",
       disabled: true,
-      status: "CONFIRMED"
+      status: "CONFIRMED",
     },
   ];
+
   const fetchPOs = async (id) => {
     setRows([]);
     setLoading(true);
     try {
       setDisplay("block");
-      const url = `http://192.168.1.10:8000/so_items?po_login_code=${id}&user_full_name=maveko_plu_module`;
+      const url = `http://localhost:8000/so_items?po_login_code=${id}&user_full_name=maveko_plu_module`;
       const response = await fetch(url);
       const data = await response.json();
       await setRows(data.details);

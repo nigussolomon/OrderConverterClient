@@ -22,6 +22,15 @@ export default function CustomerChoice({
   const navigate = useNavigate();
   const [customer, setCustomer] = useState("");
   const [disabled, setDisabled] = useState(true);
+  const [clientList, setClientList] = useState([]);
+
+  useEffect(() => {
+    fetch("http://localhost:3000/clients")
+      .then((res) => res.json())
+      .then((data) => {
+        setClientList(data["data"]);
+      });
+  });
 
   useEffect(() => {
     const nullChecker = () => {
@@ -34,10 +43,6 @@ export default function CustomerChoice({
 
     nullChecker();
   }, [customer]);
-
-  const customers = {
-    C1: "AZAMARA",
-  };
 
   return (
     <div
@@ -88,7 +93,13 @@ export default function CustomerChoice({
               label="Customer"
               variant="outlined"
             >
-              <MenuItem value="C1">AZAMARA</MenuItem>
+              {clientList
+                ? clientList.map((client) => (
+                    <MenuItem key={client.id} value={client.id}>
+                      {client.name}
+                    </MenuItem>
+                  ))
+                : null}
             </TextField>
             <IconButton
               sx={{ width: "9%" }}
@@ -105,7 +116,13 @@ export default function CustomerChoice({
           <div className="space" style={{ height: ".6vh" }}></div>
           <Button
             disabled={disabled}
-            onClick={() => navigate(`${path}/${customers[customer]}`)}
+            onClick={() =>
+              navigate(
+                `${path}/${customer}/${
+                  clientList.filter((item) => item.id == customer)[0].name
+                }`
+              )
+            }
             variant="solid"
             size="lg"
             color="primary"

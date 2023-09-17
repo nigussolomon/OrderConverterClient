@@ -13,8 +13,8 @@ function App() {
         <Route path="/" element={<Landing />} />
         <Route path="/auth" element={<Login />} />
         <Route path="/config" element={<SetupData />} />
-        <Route path="/oc/:customer" element={<Converter />} />
-        <Route path="/om/:customer" element={<Manager />} />
+        <Route path="/oc/:id/:customer" element={<Converter />} />
+        <Route path="/om/:id/:customer" element={<Manager />} />
       </Routes>
     </Router>
   );

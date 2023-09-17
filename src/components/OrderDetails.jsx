@@ -15,7 +15,7 @@ import TableHead from "@mui/material/TableHead";
 import TableRow from "@mui/material/TableRow";
 import { renderTextField } from "./RenderTextField";
 
-export default function OrderDetails({ headers, rows, close, editable }) {
+export default function OrderDetails({ headers, rows, close, editable, id }) {
   const total = rows.reduce((acc, row) => acc + row.TotalPrice, 0);
   const [value, setValue] = useState("1");
   const [expDate, setExpDate] = useState();
@@ -47,6 +47,44 @@ export default function OrderDetails({ headers, rows, close, editable }) {
 
   const handleChange = (event, newValue) => {
     setValue(newValue);
+  };
+
+  const order_items = []
+
+  const postOrder = async () => {
+    rows.map((row)=>(
+      order_items.push({
+        code: row.ItemCode,
+        name: row.ItemName,
+        description: row.ItemPackingSpec
+        ? row.ItemPackingSpec
+        : "" + ", " + row.GeneralSpec
+        ? row.GeneralSpec
+        : "",
+        product_type_id: 1,
+        unit_id: 1,
+        quantity: row.QuantityOrdered,
+        price: row.UnitPrice
+      })
+    ))
+    fetch("http://localhost:3000/client_orders", {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify({
+        payload: {
+          client_id: id,
+          order_number: headers.PONumber,
+          order_date: headers.POSentDate,
+          delivery_address: headers.DeliveryAddress1,
+          invoice_address: headers.SentInvoiceAddress1,
+          delivery_date: expDate,
+          terms: { FOB: "SHIPPING" },
+          items: { products: order_items },
+        },
+      }),
+    });
   };
 
   const inputFields = [
@@ -294,6 +332,7 @@ export default function OrderDetails({ headers, rows, close, editable }) {
         </Button>
         <div className="space" style={{ width: "20px" }}></div>
         <Button
+          onClick={postOrder}
           sx={{ padding: "10px", paddingInline: "50px" }}
           variant="contained"
           color="success"
