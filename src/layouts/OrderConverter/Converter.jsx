@@ -16,6 +16,7 @@ import ListItem from "@mui/joy/ListItem";
 import ListItemDecorator from "@mui/joy/ListItemDecorator";
 import { UilProcess } from "@iconscout/react-unicons";
 import { UilSave } from "@iconscout/react-unicons";
+import AlertMessage from "../../components/AlertMessage";
 
 export default function Converter() {
   const prefix = "https://www.mymxp.com/x/?";
@@ -24,21 +25,16 @@ export default function Converter() {
   const [rows, setRows] = React.useState([]);
   const [header, setHeaders] = React.useState({});
   const [loading, setLoading] = React.useState(false);
+  const [open, setOpen] = React.useState(false);
+  const [message, setMessage] = React.useState("");
+  const [severity, setSeverity] = React.useState("success");
   const [loginCode, setLoginCode] = React.useState(
     "A135140324B5494CA6A1A9FD85B3B3DE"
   );
+  const [orderLinks, setOrderLinks] = React.useState();
   const [display, setDisplay] = React.useState("none");
+  const [linkSaved, setLinkSaved] = React.useState(false);
 
-  const orderLinks = [
-    {
-      title: "A135140324B5494CA6A1A9FD85B3B3DE",
-      disabled: false,
-    },
-    {
-      title: "F23F84E3E06B48B1A307E486DA3B716E",
-      disabled: true,
-    },
-  ];
   const fetchPOs = async (id) => {
     setRows([]);
     setLoading(true);
@@ -51,9 +47,52 @@ export default function Converter() {
       await setHeaders(data.header.__values__);
       console.log(rows);
       setLoading(false);
+      setOpen(true);
+      setSeverity("success");
+      setMessage("SUCCESSFULLY FETCH ORDER!");
     } catch (error) {
       setDisplay("none");
       console.log(error);
+      setOpen(true);
+      setSeverity("error");
+      setMessage("UNABLE TO FETCH ORDER!");
+    }
+  };
+
+  React.useEffect(() => {
+    const fetchLinks = () => {
+      fetch(`http://localhost:3000/order_links/filter/${id}`)
+        .then((res) => res.json())
+        .then((data) => setOrderLinks(data["data"]));
+    };
+
+    fetchLinks();
+    setLinkSaved(false);
+  }, [linkSaved, id]);
+
+  const saveLink = async () => {
+    try {
+      fetch("http://localhost:3000/order_links", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({
+          payload: {
+            link: loginCode,
+            client_id: id,
+          },
+        }),
+      });
+
+      setOpen(true);
+      setMessage("SUCCESSFULLY SAVED LINK!");
+      setSeverity("success");
+      setLinkSaved(true);
+    } catch (error) {
+      setOpen(true);
+      setMessage("LINK ALREADY SAVED PLEASE USE ANOTHER LINK");
+      setSeverity("error");
     }
   };
 
@@ -62,6 +101,12 @@ export default function Converter() {
       className="converter"
       style={{ paddingInline: "10px", paddingTop: "10px" }}
     >
+      <AlertMessage
+        open={open}
+        message={message}
+        severity={severity}
+        setOpen={setOpen}
+      />
       <NavBar title={`${customer}`}></NavBar>
       <br />
       <div className="body">
@@ -92,8 +137,7 @@ export default function Converter() {
               <Button
                 color="warning"
                 onClick={() => {
-                  fetchPOs(loginCode);
-                  setModalTitle(loginCode);
+                  saveLink();
                 }}
                 sx={{
                   padding: "14px",
@@ -156,43 +200,44 @@ export default function Converter() {
                 }}
               >
                 <ListDivider inset={"gutter"} />
-                {orderLinks.map((list) => (
-                  <>
-                    <ListItem>
-                      <ListItemDecorator>
-                        <UilLink></UilLink>
-                      </ListItemDecorator>
-                      <div
-                        className="text"
-                        style={{
-                          display: "flex",
-                          justifyContent: "space-between",
-                          width: "100%",
-                          alignItems: "center",
-                        }}
-                      >
-                        <span>{list.title}</span>
-                        <Button
-                          onClick={() => {
-                            setHeaders("");
-                            setModalTitle(list.title.replace(prefix, ""));
-                            fetchPOs(list.title.replace(prefix, ""));
-                          }}
-                          disabled={list.disabled}
-                          sx={{
-                            padding: "14px",
-                            paddingInline: "40px",
-                          }}
-                          color="success"
-                          startDecorator={<UilProcess />}
-                        >
-                          PROCESS
-                        </Button>
-                      </div>
-                    </ListItem>
-                    <ListDivider inset={"gutter"} />
-                  </>
-                ))}
+                {orderLinks
+                  ? orderLinks.map((list) => (
+                      <>
+                        <ListItem>
+                          <ListItemDecorator>
+                            <UilLink></UilLink>
+                          </ListItemDecorator>
+                          <div
+                            className="text"
+                            style={{
+                              display: "flex",
+                              justifyContent: "space-between",
+                              width: "100%",
+                              alignItems: "center",
+                            }}
+                          >
+                            <span>{list.link}</span>
+                            <Button
+                              onClick={() => {
+                                setHeaders("");
+                                setModalTitle(list.link.replace(prefix, ""));
+                                fetchPOs(list.link.replace(prefix, ""));
+                              }}
+                              sx={{
+                                padding: "14px",
+                                paddingInline: "40px",
+                              }}
+                              color="success"
+                              startDecorator={<UilProcess />}
+                            >
+                              PROCESS
+                            </Button>
+                          </div>
+                        </ListItem>
+                        <ListDivider inset={"gutter"} />
+                      </>
+                    ))
+                  : null}
               </List>
             </div>
           </Box>
