@@ -1,6 +1,6 @@
 import { UilExchange } from '@iconscout/react-unicons'
 import { UilBook } from '@iconscout/react-unicons'
-import { UilSlidersV } from '@iconscout/react-unicons'
+// import { UilSlidersV } from '@iconscout/react-unicons'
 import { UilSignout } from '@iconscout/react-unicons'
 
 export const landingMenus = [
@@ -20,14 +20,14 @@ export const landingMenus = [
     icon: <UilBook/>,
     navigate: false
   },
-  {
-    id: 3,
-    title: "SYSTEM CONFIGURATION",
-    path: "/config",
-    disabled: false,
-    icon: <UilSlidersV/>,
-    navigate: true
-  },
+  // {
+  //   id: 3,
+  //   title: "SYSTEM CONFIGURATION",
+  //   path: "/config",
+  //   disabled: false,
+  //   icon: <UilSlidersV/>,
+  //   navigate: true
+  // },
   {
     id: 4,
     title: "EXIT SYSTEM",

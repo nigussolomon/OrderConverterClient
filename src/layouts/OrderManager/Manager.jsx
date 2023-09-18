@@ -1,10 +1,8 @@
 /* eslint-disable react/prop-types */
 import { useParams } from "react-router-dom";
 import NavBar from "../../components/AppBar";
-import Input from "@mui/joy/Input";
 import Button from "@mui/joy/Button";
-import { UilSearchAlt } from "@iconscout/react-unicons";
-import OrderDetails from "../../components/OrderDetails";
+import EditOrderDetails from "../../components/EditOrderDetails";
 import Box from "@mui/joy/Box";
 import ListDivider from "@mui/joy/ListDivider";
 import Typography from "@mui/joy/Typography";
@@ -14,53 +12,56 @@ import { UilPackage } from "@iconscout/react-unicons";
 import List from "@mui/joy/List";
 import ListItem from "@mui/joy/ListItem";
 import ListItemDecorator from "@mui/joy/ListItemDecorator";
-import { getClients } from "../../services/api";
+import IconButton from "@mui/joy/IconButton";
+import { UilCheck } from "@iconscout/react-unicons";
 
 export default function Manager() {
   const prefix = "https://www.mymxp.com/x/?";
-  const { customer } = useParams();
+  const { id, customer } = useParams();
   const [modalTitle, setModalTitle] = React.useState("");
   const [rows, setRows] = React.useState([]);
   const [header, setHeaders] = React.useState({});
   const [loading, setLoading] = React.useState(false);
-  const [loginCode, setLoginCode] = React.useState("");
   const [display, setDisplay] = React.useState("none");
-  const [clientList, setClientList] = React.useState([]);
+  const [clientOrders, setClientOrders] = React.useState([]);
 
   React.useEffect(() => {
-    async function CLIENTS() {
-      const clients = await getClients();
-      setClientList(clients);
-      console.log(clientList);
+    async function Orders() {
+      const response = await fetch(
+        `http://localhost:3000/client_orders/filter/${id}`
+      );
+      const data = await response.json();
+      await setClientOrders(data["data"]);
     }
-    CLIENTS();
-  });
+    Orders();
+  }, [id]);
 
-  const orderLinks = [
-    {
-      title: "A135140324B5494CA6A1A9FD85B3B3DE",
-      date: "2023-10-08",
-      disabled: false,
-      status: "PENDING",
-    },
-    {
-      title: "F23F84E3E06B48B1A307E486DA3B716E",
-      date: "2023-10-08",
-      disabled: true,
-      status: "CONFIRMED",
-    },
-  ];
+  const confirmOrder = async (id) => {
+    const response = await fetch(`http://localhost:3000/client_orders/${id}`, {
+      method: "PUT",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify({
+        payload: {
+          status: 1,
+        },
+      }),
+    });
+    const data = await response.json();
+    console.log(data);
+  };
 
   const fetchPOs = async (id) => {
     setRows([]);
     setLoading(true);
     try {
       setDisplay("block");
-      const url = `http://localhost:8000/so_items?po_login_code=${id}&user_full_name=maveko_plu_module`;
+      const url = `http://localhost:3000/order_details/${id}`;
       const response = await fetch(url);
       const data = await response.json();
-      await setRows(data.details);
-      await setHeaders(data.header.__values__);
+      await setRows(data["data"]);
+      await setHeaders(data["data"][0].client_order);
       console.log(rows);
       setLoading(false);
     } catch (error) {
@@ -77,35 +78,12 @@ export default function Manager() {
       <NavBar title={`${customer}`}></NavBar>
       <br />
       <div className="body">
-        <Input
-          value={loginCode}
-          onChange={(e) => setLoginCode(e.target.value)}
-          placeholder="Input search order number..."
-          sx={{ width: 800 }}
-          startDecorator={<UilSearchAlt />}
-          endDecorator={
-            <Button
-              onClick={() => {
-                setModalTitle(loginCode);
-              }}
-              sx={{
-                padding: "14px",
-                margin: "8px",
-                marginRight: "-4px",
-                paddingInline: "40px",
-              }}
-            >
-              SEARCH ORDER NUMBER
-            </Button>
-          }
-        />
         <Box
           sx={{
             display: "flex",
             flexWrap: "wrap",
             justifyContent: "left",
             gap: 4,
-            mt: 3,
           }}
         >
           <div style={{ display: display, width: "100vw" }}>
@@ -117,15 +95,18 @@ export default function Manager() {
               <LinearProgress size="md" variant="plain" />
             ) : (
               <>
-                <Typography level="h3">{header.PONumber}</Typography>
+                <Typography level="h3">{header.order_number}</Typography>
                 <Typography level="h4" style={{ marginTop: "0px" }}>
-                  {header.POSentByPersonCompany}
+                  {customer}
                 </Typography>
                 <Typography level="h5" style={{ marginTop: "0px" }}>
-                  {header.POSentDate}
+                  {header.order_date}
                 </Typography>
                 <ListDivider sx={{ mt: 2, mb: 2 }} inset={"gutter"} />
-                <OrderDetails
+                <EditOrderDetails
+                  customer={customer}
+                  order_id={header.id}
+                  id={id}
                   headers={header}
                   rows={rows}
                   close={() => setDisplay("none")}
@@ -147,44 +128,75 @@ export default function Manager() {
                 }}
               >
                 <ListDivider inset={"gutter"} />
-                {orderLinks.map((list) => (
-                  <>
-                    <ListItem>
-                      <ListItemDecorator>
-                        <UilPackage></UilPackage>
-                      </ListItemDecorator>
-                      <div
-                        className="text"
-                        style={{
-                          display: "flex",
-                          justifyContent: "space-between",
-                          width: "100%",
-                          alignItems: "center",
-                        }}
-                      >
-                        <span>{list.title}</span>
-                        <span>{list.date}</span>
-                        <span>{list.status}</span>
-                        <Button
-                          onClick={() => {
-                            setHeaders("");
-                            setModalTitle(list.title.replace(prefix, ""));
-                            fetchPOs(list.title.replace(prefix, ""));
-                          }}
-                          disabled={list.disabled}
-                          sx={{
-                            padding: "14px",
-                            paddingInline: "40px",
-                          }}
-                          color="warning"
-                        >
-                          UPDATE
-                        </Button>
-                      </div>
-                    </ListItem>
-                    <ListDivider inset={"gutter"} />
-                  </>
-                ))}
+                {clientOrders && clientOrders.length > 0
+                  ? clientOrders.map((list) => (
+                      <>
+                        <ListItem>
+                          <ListItemDecorator>
+                            <UilPackage></UilPackage>
+                          </ListItemDecorator>
+                          <div
+                            className="text"
+                            style={{
+                              display: "flex",
+                              justifyContent: "space-between",
+                              width: "100%",
+                              alignItems: "center",
+                            }}
+                          >
+                            <span>{list.order_number}</span>
+                            <span>{list.order_date}</span>
+                            <span>{list.status.toUpperCase()}</span>
+                            <div
+                              className="actions"
+                              style={{ display: "flex" }}
+                            >
+                              <Button
+                                onClick={() => {
+                                  setHeaders("");
+                                  setModalTitle(list.order_number);
+                                  fetchPOs(list.id);
+                                }}
+                                disabled={list.status != "draft" ? true : false}
+                                sx={{
+                                  padding: "14px",
+                                  paddingInline: "40px",
+                                }}
+                                color="warning"
+                              >
+                                UPDATE
+                              </Button>
+                              <div
+                                className="space"
+                                style={{ width: "12px" }}
+                              ></div>
+                              <IconButton
+                                disabled={list.status != "draft" ? true : false}
+                                onClick={() => {
+                                  confirmOrder(list.id);
+                                  const newClientOrders = clientOrders.map(
+                                    (order) => {
+                                      if (order.id == list.id) {
+                                        order.status = "CONFIRMED";
+                                      }
+                                      return order;
+                                    }
+                                  );
+
+                                  setClientOrders(newClientOrders);
+                                }}
+                                color="success"
+                                variant="solid"
+                              >
+                                <UilCheck />
+                              </IconButton>
+                            </div>
+                          </div>
+                        </ListItem>
+                        <ListDivider inset={"gutter"} />
+                      </>
+                    ))
+                  : null}
               </List>
             </div>
           </Box>

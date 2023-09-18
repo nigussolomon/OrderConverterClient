@@ -6,7 +6,7 @@ import Tab from "@mui/material/Tab";
 import TabContext from "@mui/lab/TabContext";
 import TabList from "@mui/lab/TabList";
 import TabPanel from "@mui/lab/TabPanel";
-import Button from "@mui/material/Button";
+import Button from "@mui/joy/Button";
 import Table from "@mui/material/Table";
 import TableBody from "@mui/material/TableBody";
 import TableCell from "@mui/material/TableCell";
@@ -19,9 +19,6 @@ export default function OrderDetails({ headers, rows, close, editable, id }) {
   const total = rows.reduce((acc, row) => acc + row.TotalPrice, 0);
   const [value, setValue] = useState("1");
   const [expDate, setExpDate] = useState();
-  const [shipName, setShipName] = useState(
-    headers ? headers.PODestinationName : ""
-  );
   const [deliveryAddress, setDeliveryAddress] = useState(
     headers ? headers.DeliveryAddress1 : ""
   );
@@ -49,24 +46,24 @@ export default function OrderDetails({ headers, rows, close, editable, id }) {
     setValue(newValue);
   };
 
-  const order_items = []
+  const order_items = [];
 
   const postOrder = async () => {
-    rows.map((row)=>(
+    rows.map((row) =>
       order_items.push({
         code: row.ItemCode,
         name: row.ItemName,
         description: row.ItemPackingSpec
-        ? row.ItemPackingSpec
-        : "" + ", " + row.GeneralSpec
-        ? row.GeneralSpec
-        : "",
+          ? row.ItemPackingSpec
+          : "" + ", " + row.GeneralSpec
+          ? row.GeneralSpec
+          : "",
         product_type_id: 1,
         unit_id: 1,
         quantity: row.QuantityOrdered,
-        price: row.UnitPrice
+        price: row.UnitPrice,
       })
-    ))
+    );
     fetch("http://localhost:3000/client_orders", {
       method: "POST",
       headers: {
@@ -80,7 +77,7 @@ export default function OrderDetails({ headers, rows, close, editable, id }) {
           delivery_address: headers.DeliveryAddress1,
           invoice_address: headers.SentInvoiceAddress1,
           delivery_date: expDate,
-          terms: { FOB: "SHIPPING" },
+          terms: {freight_terms: "FOB", currency: "EURO"},
           items: { products: order_items },
         },
       }),
@@ -108,13 +105,15 @@ export default function OrderDetails({ headers, rows, close, editable, id }) {
       width: "632.5px",
       disabled: !editable,
     },
+
     {
-      label: "Name of Ship",
-      value: shipName,
-      change: setShipName,
+      label: "Expected Date",
+      value: expDate,
+      change: setExpDate,
       width: "332.5px",
-      disabled: !editable,
+      date: true,
     },
+
   ];
 
   const inputFields2 = [
@@ -179,13 +178,6 @@ export default function OrderDetails({ headers, rows, close, editable, id }) {
       width: "332.5px",
       date: true,
       disabled: !editable,
-    },
-    {
-      label: "Expected Date",
-      value: expDate,
-      change: setExpDate,
-      width: "332.5px",
-      date: true,
     },
   ];
 
@@ -326,7 +318,7 @@ export default function OrderDetails({ headers, rows, close, editable, id }) {
           onClick={close}
           sx={{ padding: "10px", paddingInline: "50px" }}
           variant="outlined"
-          color="error"
+          color="danger"
         >
           CANCEL
         </Button>
@@ -334,10 +326,10 @@ export default function OrderDetails({ headers, rows, close, editable, id }) {
         <Button
           onClick={postOrder}
           sx={{ padding: "10px", paddingInline: "50px" }}
-          variant="contained"
+          variant="solid"
           color="success"
         >
-          SAVE ORDER
+          SAVE
         </Button>
       </div>
     </>

@@ -6,7 +6,7 @@ import Tab from "@mui/material/Tab";
 import TabContext from "@mui/lab/TabContext";
 import TabList from "@mui/lab/TabList";
 import TabPanel from "@mui/lab/TabPanel";
-import Button from "@mui/material/Button";
+import Button from "@mui/joy/Button";
 import Table from "@mui/material/Table";
 import TableBody from "@mui/material/TableBody";
 import TableCell from "@mui/material/TableCell";
@@ -15,41 +15,74 @@ import TableHead from "@mui/material/TableHead";
 import TableRow from "@mui/material/TableRow";
 import { renderTextField } from "./RenderTextField";
 
-export default function EditOrderDetails({ headers, rows, close }) {
-  const total = rows.reduce((acc, row) => acc + row.TotalPrice, 0);
+export default function EditOrderDetails({
+  headers,
+  rows,
+  close,
+  id,
+  order_id,
+  customer,
+}) {
+  const total = rows.reduce((acc, row) => acc + row.price, 0);
   const [value, setValue] = useState("1");
-  const [expDate, setExpDate] = useState();
-  const [shipName, setShipName] = useState(
-    headers ? headers.PODestinationName : ""
+  const [expDate, setExpDate] = useState(
+    headers.delivery_date ? dayjs(headers.delivery_date) : ""
   );
   const [deliveryAddress, setDeliveryAddress] = useState(
-    headers ? headers.DeliveryAddress1 : ""
+    headers ? headers.delivery_address : ""
   );
   const [finalDelivery, setFinalDelivery] = useState(
     headers
-      ? `${
-          headers.DeliveryDateToDestination
-            ? dayjs(headers.DeliveryDateToDestination)
-            : ""
-        } | ${
-          headers.DestinationDeliveryPlace
-            ? headers.DestinationDeliveryPlace
-            : ""
+      ? `${headers.delivery_date ? dayjs(headers.delivery_date).add(1, 'day') : ""} | ${
+          headers.delivery_address ? headers.delivery_address : ""
         }`
       : ""
   );
-  const [deliveryDate, setDeliveryDate] = useState(
-    headers ? dayjs(headers.DeliveryDateToDestination) : ""
-  );
-
   const handleChange = (event, newValue) => {
     setValue(newValue);
+  };
+
+  const [editableQty, setEditableQty] = useState({});
+  const [editableUnitCost, setEditableUnitCost] = useState({});
+
+  const order_items = [];
+
+  const updateOrder = async () => {
+    rows.map((row) =>
+      order_items.push({
+        code: row.product.code,
+        name: row.product.name,
+        description: row.product.description,
+        product_type_id: 1,
+        unit_id: 1,
+        quantity: editableQty[row.id] ? editableQty[row.id] : row.quantity,
+        price: editableUnitCost[row.id] ? editableUnitCost[row.id] : row.price,
+      })
+    );
+    fetch(`http://localhost:3000/client_orders/${order_id}`, {
+      method: "PATCH",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify({
+        payload: {
+          client_id: id,
+          order_number: headers.PONumber,
+          order_date: headers.POSentDate,
+          delivery_address: deliveryAddress,
+          invoice_address: headers.SentInvoiceAddress1,
+          delivery_date: dayjs(expDate).add(1, 'day'),
+          terms: { freight_terms: "FOB", currency: "EURO" },
+          items: { products: order_items },
+        },
+      }),
+    });
   };
 
   const inputFields = [
     {
       label: "PO Number",
-      value: headers ? headers.PONumber : "",
+      value: headers ? headers.order_number : "",
       width: "332.5px",
     },
     {
@@ -63,69 +96,14 @@ export default function EditOrderDetails({ headers, rows, close }) {
       value: finalDelivery,
       change: setFinalDelivery,
       width: "632.5px",
-    },
-    {
-      label: "Name of Ship",
-      value: shipName,
-      change: setShipName,
-      width: "332.5px",
-    },
-  ];
-
-  const inputFields2 = [
-    {
-      label: "Customer",
-      value: headers ? headers.POSentByPersonCompany : "",
-      width: "332.5px",
-    },
-    {
-      label: "Street",
-      value: headers ? headers.SentInvoiceAddress3 : "",
-      width: "532.5px",
-    },
-    {
-      label: "City",
-      value: headers ? headers.SentInvoiceAddress2 : "",
-      width: "532.5px",
-    },
-    {
-      label: "Address",
-      value: headers
-        ? headers.SentInvoiceAddress5
-          ? headers.SentInvoiceAddress5
-          : "" + " | " + headers.SentInvoiceAddress4
-          ? headers.SentInvoiceAddress4
-          : "" + " | " + headers.SentInvoiceAddress6
-          ? headers.SentInvoiceAddress6
-          : ""
-        : "",
-      width: "332.5px",
-    },
-  ];
-
-  const inputFields3 = [
-    {
-      label: "Terms",
-      value: headers ? headers.PaymentTerms : "",
-      width: "332.5px",
-    },
-    {
-      label: "Process Matchcode",
-      value: headers ? headers.PONumber : "",
-      width: "332.5px",
+      disabled: true,
     },
     {
       label: "Refernce Date",
-      value: headers ? dayjs(headers.POSentDate) : "",
+      value: headers ? dayjs(headers.order_date) : "",
       width: "332.5px",
       date: true,
-    },
-    {
-      label: "Delivery Date",
-      value: deliveryDate,
-      change: setDeliveryDate,
-      width: "332.5px",
-      date: true,
+      disabled: true,
     },
     {
       label: "Expected Date",
@@ -133,6 +111,16 @@ export default function EditOrderDetails({ headers, rows, close }) {
       change: setExpDate,
       width: "332.5px",
       date: true,
+    },
+    {
+      label: "Customer",
+      value: customer,
+      width: "332.5px",
+    },
+    {
+      label: "Invoice Address",
+      value: headers ? headers.invoice_address : "",
+      width: "532.5px",
     },
   ];
 
@@ -160,14 +148,10 @@ export default function EditOrderDetails({ headers, rows, close }) {
       <TabContext value={value}>
         <Box sx={{ borderBottom: 1, borderColor: "divider" }}>
           <TabList onChange={handleChange} aria-label="lab API tabs example">
-            <Tab label="Maveko Details" value="1" />
-            <Tab label="Customer Details" value="2" />
-            <Tab label="Document Details" value="3" />
+            <Tab label="Order Details" value="1" />
           </TabList>
         </Box>
         <TabPanel value="1">{renderFields(inputFields)}</TabPanel>
-        <TabPanel value="2">{renderFields(inputFields2)}</TabPanel>
-        <TabPanel value="3">{renderFields(inputFields3)}</TabPanel>
       </TabContext>
       <Box
         style={{
@@ -180,7 +164,6 @@ export default function EditOrderDetails({ headers, rows, close }) {
           <Table aria-label="spanning table">
             <TableHead style={{ background: "#fff" }}>
               <TableRow>
-                <TableCell>#</TableCell>
                 <TableCell>Item Number</TableCell>
                 <TableCell style={{ maxWidth: "250px" }}>Description</TableCell>
                 <TableCell>U/M</TableCell>
@@ -192,51 +175,53 @@ export default function EditOrderDetails({ headers, rows, close }) {
             </TableHead>
             <TableBody>
               {rows.map((row) => (
-                <TableRow key={row.ItemCode}>
-                  <TableCell>{row.LineNumber}</TableCell>
-                  <TableCell>{row.ItemCode}</TableCell>
+                <TableRow key={row.id}>
+                  <TableCell>{row.product.code}</TableCell>
                   <TableCell style={{ maxWidth: "450px" }}>
-                    {row.ItemName
-                      ? row.ItemName
-                      : "" + ", " + row.ItemPackingSpec
-                      ? row.ItemPackingSpec
-                      : "" + ", " + row.GeneralSpec
-                      ? row.GeneralSpec
-                      : ""}
+                    {row.product.name}
                   </TableCell>
-                  <TableCell>{row.UOM}</TableCell>
+                  <TableCell>{row.product.unit_id}</TableCell>
+                  {
+                    <>
+                      <TableCell align="right">
+                        <input
+                          type="number"
+                          value={editableQty[row.id] || row.quantity}
+                          onChange={(e) =>
+                            setEditableQty({
+                              ...editableQty,
+                              [row.id]: e.target.value,
+                            })
+                          }
+                        />
+                      </TableCell>
+                      <TableCell align="right">
+                        <input
+                          type="number"
+                          value={editableUnitCost[row.id] || row.price}
+                          onChange={(e) =>
+                            setEditableUnitCost({
+                              ...editableUnitCost,
+                              [row.id]: e.target.value,
+                            })
+                          }
+                        />
+                      </TableCell>
+                    </>
+                  }
                   <TableCell align="right">
-                    {row.UnitPrice.toString()}
-                  </TableCell>
-                  <TableCell align="right">{row.QuantityOrdered}</TableCell>
-                  <TableCell align="right">
-                    {(row.QuantityOrdered * row.UnitPrice)
+                    {(
+                      (editableQty[row.id] || row.quantity) *
+                      (editableUnitCost[row.id] || row.price)
+                    )
                       .toFixed(2)
                       .toString()}
                   </TableCell>
-                  <TableCell align="right">{row.TotalPrice}</TableCell>
+                  <TableCell align="right">
+                    {total.toFixed(2).toString()}
+                  </TableCell>
                 </TableRow>
               ))}
-              <TableRow>
-                <TableCell colSpan={6} />
-                <TableCell
-                  colSpan={1}
-                  align="left"
-                  style={{
-                    fontWeight: 900,
-                    background: "#808080",
-                    color: "#fff",
-                  }}
-                >
-                  Subtotal
-                </TableCell>
-                <TableCell
-                  style={{ background: "#808080", color: "#fff" }}
-                  align="right"
-                >
-                  {total.toFixed(2).toString()}
-                </TableCell>
-              </TableRow>
             </TableBody>
           </Table>
         </TableContainer>
@@ -253,17 +238,18 @@ export default function EditOrderDetails({ headers, rows, close }) {
           onClick={close}
           sx={{ padding: "10px", paddingInline: "50px" }}
           variant="outlined"
-          color="error"
+          color="danger"
         >
           CANCEL
         </Button>
         <div className="space" style={{ width: "20px" }}></div>
         <Button
+          onClick={updateOrder}
           sx={{ padding: "10px", paddingInline: "50px" }}
-          variant="contained"
-          color="success"
+          variant="solid"
+          color="warning"
         >
-          SAVE ORDER
+          UPDATE ORDER
         </Button>
       </div>
     </>

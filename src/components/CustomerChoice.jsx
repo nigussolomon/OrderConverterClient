@@ -30,7 +30,7 @@ export default function CustomerChoice({
       .then((data) => {
         setClientList(data["data"]);
       });
-  });
+  }, [customer]);
 
   useEffect(() => {
     const nullChecker = () => {
@@ -118,7 +118,7 @@ export default function CustomerChoice({
             disabled={disabled}
             onClick={() =>
               navigate(
-                `${path}/${customer}/${
+                `${path}/${customer}/${customer}/${
                   clientList.filter((item) => item.id == customer)[0].name
                 }`
               )
