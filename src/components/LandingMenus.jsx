@@ -1,6 +1,7 @@
 import { UilExchange } from '@iconscout/react-unicons'
 import { UilBook } from '@iconscout/react-unicons'
 // import { UilSlidersV } from '@iconscout/react-unicons'
+import { UilLabelAlt } from '@iconscout/react-unicons'
 import { UilSignout } from '@iconscout/react-unicons'
 
 export const landingMenus = [
@@ -19,6 +20,14 @@ export const landingMenus = [
     disabled: false,
     icon: <UilBook/>,
     navigate: false
+  },
+  {
+    id: 1,
+    title: "PRICE LIST",
+    path: "/pl",
+    disabled: false,
+    icon: <UilLabelAlt/>,
+    navigate: true
   },
   // {
   //   id: 3,
